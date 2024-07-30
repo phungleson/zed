@@ -29,7 +29,19 @@ impl Render for Shadow {
                             offset: point(px(32.), px(16.)),
                             blur_radius: px(0.0),
                             spread_radius: px(0.),
-                        }
+                        },
+                        BoxShadow {
+                            color: hsla(0., 0., 0., 1.0),
+                            offset: point(px(48.), px(48.)),
+                            blur_radius: px(0.0),
+                            spread_radius: px(8.),
+                        },
+                        BoxShadow {
+                            color: hsla(0., 0., 100., 1.0),
+                            offset: point(px(48.), px(48.)),
+                            blur_radius: px(0.0),
+                            spread_radius: px(0.),
+                        },
                     ]),
             )
     }
