@@ -480,10 +480,14 @@ impl From<Underline> for Primitive {
 pub(crate) struct Shadow {
     pub order: DrawOrder,
     pub blur_radius: ScaledPixels,
+    /// The bounds of the caster, which are required for inset shadow rendering.
+    /// Shadow bounds is calculated in shaders.
     pub bounds: Bounds<ScaledPixels>,
     pub corner_radii: Corners<ScaledPixels>,
     pub content_mask: ContentMask<ScaledPixels>,
     pub color: Hsla,
+    pub offset: Point<ScaledPixels>,
+    pub spread_radius: ScaledPixels,
 }
 
 impl Ord for Shadow {
