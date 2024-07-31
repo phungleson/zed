@@ -1,7 +1,3 @@
-mod transform;
-
-use transform::Transform;
-
 use std::{
     hash::{Hash, Hasher},
     iter, mem,
@@ -12,7 +8,7 @@ use crate::{
     black, phi, point, quad, rems, AbsoluteLength, Bounds, ContentMask, Corners, CornersRefinement,
     CursorStyle, DefiniteLength, Edges, EdgesRefinement, Font, FontFallbacks, FontFeatures,
     FontStyle, FontWeight, Hsla, Length, Pixels, Point, PointRefinement, Rgba, SharedString, Size,
-    SizeRefinement, Styled, TextRun, WindowContext,
+    SizeRefinement, Styled, TextRun, Transformation, WindowContext,
 };
 use collections::HashSet;
 use refineable::Refineable;
@@ -124,7 +120,7 @@ pub struct Style {
     pub mouse_cursor: Option<CursorStyle>,
 
     /// The transformation of this element.
-    pub transform: Option<Transform>,
+    pub transform: Option<Transformation>,
 
     /// Whether to draw a red debugging outline around this element
     #[cfg(debug_assertions)]
