@@ -283,9 +283,8 @@ vertex ShadowVertexOutput shadow_vertex(
   float2 unit_vertex = unit_vertices[unit_vertex_id];
   Shadow shadow = shadows[shadow_id];
 
+  // Adjust the shadow's bounds based on the its blur radius to achieve the spreading effect
   float margin = 3. * shadow.blur_radius;
-  // Set the bounds of the shadow and adjust its size based on the shadow's
-  // spread radius to achieve the spreading effect
   Bounds_ScaledPixels bounds = shadow.bounds;
   bounds.origin.x -= margin;
   bounds.origin.y -= margin;
