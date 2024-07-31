@@ -139,6 +139,13 @@ float4 over(float4 below, float4 above) {
   return result;
 }
 
+/**
+ * Determines the corner radius value based on the relative position of the point to the center of the rectangle. Note that, this is in pixel coordinates, not normalized device coordinates, i.e. top left corresponds to x < 0 and y < 0.
+ *
+ * @param center_to_point The vector from the center of the rectangle to the point for which the corner radius is to be determined.
+ * @param radii Struct containing the corner radii for different corners of the rectangle.
+ * @return The corner radius value based on the position of the point relative to the rectangle center.
+ */
 float get_corner_radius(float2 center_to_point, Corners_ScaledPixels radii) {
   if (center_to_point.x < 0.0) {
     if (center_to_point.y < 0.0) {
