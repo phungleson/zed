@@ -1,3 +1,7 @@
+mod transform;
+
+use transform::Transform;
+
 use std::{
     hash::{Hash, Hasher},
     iter, mem,
@@ -118,6 +122,9 @@ pub struct Style {
 
     /// The mouse cursor style shown when the mouse pointer is over an element.
     pub mouse_cursor: Option<CursorStyle>,
+
+    /// The transformation of this element.
+    pub transform: Option<Transform>,
 
     /// Whether to draw a red debugging outline around this element
     #[cfg(debug_assertions)]
@@ -564,6 +571,7 @@ impl Default for Style {
             corner_radii: Corners::default(),
             box_shadow: Default::default(),
             text: TextStyleRefinement::default(),
+            transform: None,
             mouse_cursor: None,
 
             #[cfg(debug_assertions)]
