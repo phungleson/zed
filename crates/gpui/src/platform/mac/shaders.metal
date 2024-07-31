@@ -178,6 +178,45 @@ float sdf(float2 center_to_point, float2 half_size, float corner_radius) {
   return distance;
 }
 
+Bounds_ScaledPixels clone_bounds(const thread Bounds_ScaledPixels &bounds) {
+  Bounds_ScaledPixels new_bounds;
+  new_bounds.origin.x = bounds.origin.x;
+  new_bounds.origin.y = bounds.origin.y;
+
+  new_bounds.size.width = bounds.size.width;
+  new_bounds.size.height = bounds.size.height;
+  return new_bounds;
+}
+
+/**
+ * Adjust the shadow bounds based on the its offset.
+ */
+void add_shadow_offset(thread Bounds_ScaledPixels &bounds, const thread Point_ScaledPixels &offset) {
+  bounds.origin.x += offset.x;
+  bounds.origin.y += offset.y;
+}
+
+/**
+ * Adjust the shadow bounds based on the its spread radius.
+ */
+void add_shadow_spread(thread Bounds_ScaledPixels &bounds, float spread_radius) {
+  bounds.origin.x -= spread_radius;
+  bounds.origin.y -= spread_radius;
+  bounds.size.width += 2. * spread_radius;
+  bounds.size.height += 2. * spread_radius;
+}
+
+/**
+ * Adjust the shadow bounds based on the its blur radius to achieve the spreading effect.
+ */
+void add_shadow_blur_spread(thread Bounds_ScaledPixels &bounds, float blur_radius) {
+  float blur_spread = 3. * blur_radius;
+  bounds.origin.x -= blur_spread;
+  bounds.origin.y -= blur_spread;
+  bounds.size.width += 2. * blur_spread;
+  bounds.size.height += 2. * blur_spread;
+}
+
 // --- quads --- //
 
 struct QuadVertexOutput {
@@ -297,18 +336,16 @@ vertex ShadowVertexOutput shadow_vertex(
   float2 unit_vertex = unit_vertices[unit_vertex_id];
   Shadow shadow = shadows[shadow_id];
 
-  // Adjust the shadow's bounds based on the its blur radius to achieve the spreading effect
-  float margin = 3. * shadow.blur_radius;
-  Bounds_ScaledPixels bounds = shadow.bounds;
-  bounds.origin.x -= margin;
-  bounds.origin.y -= margin;
-  bounds.size.width += 2. * margin;
-  bounds.size.height += 2. * margin;
+  Bounds_ScaledPixels shadow_bounds = clone_bounds(shadow.bounds);
+
+  add_shadow_offset(shadow_bounds, shadow.offset);
+  add_shadow_spread(shadow_bounds, shadow.spread_radius);
+  add_shadow_blur_spread(shadow_bounds, shadow.blur_radius);
 
   float4 device_position =
-      to_device_position(unit_vertex, bounds, viewport_size);
+      to_device_position(unit_vertex, shadow_bounds, viewport_size);
   float4 clip_distance =
-      distance_from_clip_rect(unit_vertex, bounds, shadow.content_mask.bounds);
+      distance_from_clip_rect(unit_vertex, shadow_bounds, shadow.content_mask.bounds);
   float4 color = hsla_to_rgba(shadow.color);
 
   return ShadowVertexOutput{
@@ -323,8 +360,13 @@ fragment float4 shadow_fragment(ShadowFragmentInput input [[stage_in]],
                                 [[buffer(ShadowInputIndex_Shadows)]]) {
   Shadow shadow = shadows[input.shadow_id];
 
-  float2 origin = float2(shadow.bounds.origin.x, shadow.bounds.origin.y);
-  float2 size = float2(shadow.bounds.size.width, shadow.bounds.size.height);
+  Bounds_ScaledPixels shadow_bounds = clone_bounds(shadow.bounds);
+
+  add_shadow_offset(shadow_bounds, shadow.offset);
+  add_shadow_spread(shadow_bounds, shadow.spread_radius);
+
+  float2 origin = float2(shadow_bounds.origin.x, shadow_bounds.origin.y);
+  float2 size = float2(shadow_bounds.size.width, shadow_bounds.size.height);
   float2 half_size = size / 2.;
   float2 center = origin + half_size;
   float2 center_to_point = input.position.xy - center;
