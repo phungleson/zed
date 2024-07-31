@@ -156,10 +156,9 @@ float get_corner_radius(float2 center_to_point, Corners_ScaledPixels radii) {
 }
 
 float sdf(float2 center_to_point, float2 half_size, float corner_radius) {
-  float2 rounded_edge_to_point = abs(center_to_point) - half_size + corner_radius;
-  float distance = length(max(0., rounded_edge_to_point)) +
-    min(0., max(rounded_edge_to_point.x, rounded_edge_to_point.y)) -
-    corner_radius;
+  float2 rectangle_to_point = abs(center_to_point) - (half_size - corner_radius);
+  float rectangle_distance = length(max(0., rectangle_to_point)) + min(0., max(rectangle_to_point.x, rectangle_to_point.y));
+  float distance = rectangle_distance - corner_radius;
 
   return distance;
 }
@@ -318,7 +317,7 @@ fragment float4 shadow_fragment(ShadowFragmentInput input [[stage_in]],
 
   if (shadow.blur_radius == 0.) {
     float distance = sdf(center_to_point, half_size, corner_radius);
-    return input.color * float4(1., 1., 1., saturate(0.5 - distance));
+    return input.color * float4(1., 1., 1., step(0., -distance));
   }
 
   // The signal is only non-zero in a limited range, so don't waste samples
