@@ -1924,7 +1924,7 @@ impl Corners<AbsoluteLength> {
     /// let corners = Corners {
     ///     top_left: AbsoluteLength::Pixels(Pixels(15.0)),
     ///     top_right: AbsoluteLength::Rems(Rems(1.0)),
-    ///     bottom_right: AbsoluteLength::Pixels(Pixels(20.0)),
+    ///     bottom_right: AbsoluteLength::Pixels(Pixels(30.0)),
     ///     bottom_left: AbsoluteLength::Rems(Rems(2.0)),
     /// };
     /// let size = Size { width: Pixels(100.0), height: Pixels(50.0) };
@@ -1934,8 +1934,8 @@ impl Corners<AbsoluteLength> {
     /// // The resulting corners should not exceed half the size of the smallest dimension (50.0 / 2.0 = 25.0).
     /// assert_eq!(corners_in_pixels.top_left, Pixels(15.0));
     /// assert_eq!(corners_in_pixels.top_right, Pixels(16.0)); // 1 rem converted to pixels
-    /// assert_eq!(corners_in_pixels.bottom_right, Pixels(20.0).min(Pixels(25.0))); // Clamped to 25.0
-    /// assert_eq!(corners_in_pixels.bottom_left, Pixels(32.0).min(Pixels(25.0))); // 2 rems converted to pixels and clamped
+    /// assert_eq!(corners_in_pixels.bottom_right, Pixels(30.0).min(Pixels(25.0))); // Clamped to 25.0
+    /// assert_eq!(corners_in_pixels.bottom_left, Pixels(32.0).min(Pixels(25.0))); // 2 rems converted to pixels and clamped to 25.0
     /// ```
     pub fn to_pixels(&self, size: Size<Pixels>, rem_size: Pixels) -> Corners<Pixels> {
         let max = size.width.min(size.height) / 2.;
