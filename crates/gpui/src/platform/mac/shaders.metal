@@ -155,6 +155,14 @@ float get_corner_radius(float2 center_to_point, Corners_ScaledPixels radii) {
   }
 }
 
+/**
+ * Calculates the signed distance function (SDF) for a rectangular shape with rounded corners.
+ *
+ * @param center_to_point The vector from the center of the rectangle to the point for which the distance is to be calculated.
+ * @param half_size The half-size (half-width and half-height) of the rectangle.
+ * @param corner_radius The radius of the rounded corners of the rectangle.
+ * @return The distance from the point to the shape boundary (negative inside the shape, positive outside).
+ */
 float sdf(float2 center_to_point, float2 half_size, float corner_radius) {
   float2 rectangle_to_point = abs(center_to_point) - (half_size - corner_radius);
   float rectangle_distance = length(max(0., rectangle_to_point)) + min(0., max(rectangle_to_point.x, rectangle_to_point.y));
