@@ -16,29 +16,37 @@ impl Render for Shadow {
                 div()
                     .size_4()
                     .rounded_full()
-                    .bg(rgb(0xff0000))
+                    .bg(rgb(0x000000))
                     .shadow(smallvec![
                         BoxShadow {
                             color: hsla(0., 0., 0., 1.0),
-                            offset: point(px(16.), px(16.)),
-                            blur_radius: px(1.0),
-                            spread_radius: px(0.),
-                        },
-                        BoxShadow {
-                            color: hsla(0., 0., 0., 1.0),
-                            offset: point(px(32.), px(16.)),
-                            blur_radius: px(0.0),
-                            spread_radius: px(0.),
-                        },
-                        BoxShadow {
-                            color: hsla(0., 0., 0., 1.0),
-                            offset: point(px(48.), px(48.)),
+                            offset: point(px(24.), px(24.)),
                             blur_radius: px(0.0),
                             spread_radius: px(8.),
                         },
                         BoxShadow {
                             color: hsla(0., 0., 100., 1.0),
-                            offset: point(px(48.), px(48.)),
+                            offset: point(px(24.), px(24.)),
+                            blur_radius: px(0.0),
+                            spread_radius: px(0.),
+                        },
+                    ]),
+            )
+            .child(
+                div()
+                    .size_4()
+                    .rounded_full()
+                    .bg(rgb(0xff0000))
+                    .shadow(smallvec![
+                        BoxShadow {
+                            color: rgb(0xff0000).into(),
+                            offset: point(px(16.), px(16.)),
+                            blur_radius: px(1.0),
+                            spread_radius: px(0.),
+                        },
+                        BoxShadow {
+                            color: rgb(0xff0000).into(),
+                            offset: point(px(32.), px(32.)),
                             blur_radius: px(0.0),
                             spread_radius: px(0.),
                         },
@@ -51,9 +59,22 @@ impl Render for Shadow {
                     .rounded_br(px(8.))
                     .bg(rgb(0x0000ff))
                     .shadow(smallvec![BoxShadow {
-                        color: rgb(0x00ff00).into(),
-                        offset: point(px(32.), px(16.)),
+                        color: rgb(0x0000ff).into(),
+                        offset: point(px(32.), px(32.)),
                         blur_radius: px(0.0),
+                        spread_radius: px(0.),
+                    }]),
+            )
+            .child(
+                div()
+                    .h_2()
+                    .w_16()
+                    .rounded_full()
+                    .bg(rgb(0x00ff00))
+                    .shadow(smallvec![BoxShadow {
+                        color: rgb(0x00ff00).into(),
+                        offset: point(px(32.), px(32.)),
+                        blur_radius: px(8.),
                         spread_radius: px(0.),
                     }]),
             )
