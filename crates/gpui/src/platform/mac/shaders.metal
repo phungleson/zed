@@ -178,6 +178,9 @@ float sdf(float2 center_to_point, float2 half_size, float corner_radius) {
   return distance;
 }
 
+/**
+ * Clones into a new bounds.
+ */
 Bounds_ScaledPixels clone_bounds(const thread Bounds_ScaledPixels &bounds) {
   Bounds_ScaledPixels new_bounds;
   new_bounds.origin.x = bounds.origin.x;
@@ -189,7 +192,7 @@ Bounds_ScaledPixels clone_bounds(const thread Bounds_ScaledPixels &bounds) {
 }
 
 /**
- * Adjust the shadow bounds based on the its offset.
+ * Adjusts the shadow bounds based on the its offset.
  */
 void add_shadow_offset(thread Bounds_ScaledPixels &bounds, const thread Point_ScaledPixels &offset) {
   bounds.origin.x += offset.x;
@@ -197,7 +200,7 @@ void add_shadow_offset(thread Bounds_ScaledPixels &bounds, const thread Point_Sc
 }
 
 /**
- * Adjust the shadow bounds based on the its spread radius.
+ * Adjusts the shadow bounds based on the its spread radius.
  */
 void add_shadow_spread(thread Bounds_ScaledPixels &bounds, float spread_radius) {
   bounds.origin.x -= spread_radius;
@@ -207,7 +210,7 @@ void add_shadow_spread(thread Bounds_ScaledPixels &bounds, float spread_radius) 
 }
 
 /**
- * Adjust the shadow bounds based on the its blur radius to achieve the spreading effect.
+ * Adjusts the shadow bounds based on the its blur radius to achieve the spreading effect.
  */
 void add_shadow_blur_spread(thread Bounds_ScaledPixels &bounds, float blur_radius) {
   float blur_spread = 3. * blur_radius;
@@ -272,10 +275,9 @@ fragment float4 quad_fragment(QuadFragmentInput input [[stage_in]],
     return input.background_color;
   }
 
-  float2 half_size =
-      float2(quad.bounds.size.width, quad.bounds.size.height) / 2.;
-  float2 center =
-      float2(quad.bounds.origin.x, quad.bounds.origin.y) + half_size;
+  Bounds_ScaledPixels bounds = quad.bounds;
+  float2 half_size = float2(bounds.size.width, bounds.size.height) / 2.;
+  float2 center = float2(bounds.origin.x, bounds.origin.y) + half_size;
   float2 center_to_point = input.position.xy - center;
   float corner_radius = get_corner_radius(center_to_point, quad.corner_radii);
 
