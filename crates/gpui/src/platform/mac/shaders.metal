@@ -362,21 +362,33 @@ fragment float4 shadow_fragment(ShadowFragmentInput input [[stage_in]],
                                 [[buffer(ShadowInputIndex_Shadows)]]) {
   Shadow shadow = shadows[input.shadow_id];
 
+  Bounds_ScaledPixels caster_bounds = clone_bounds(shadow.bounds);
   Bounds_ScaledPixels shadow_bounds = clone_bounds(shadow.bounds);
 
   add_shadow_offset(shadow_bounds, shadow.offset);
   add_shadow_spread(shadow_bounds, shadow.spread_radius);
+
 
   float2 origin = float2(shadow_bounds.origin.x, shadow_bounds.origin.y);
   float2 size = float2(shadow_bounds.size.width, shadow_bounds.size.height);
   float2 half_size = size / 2.;
   float2 center = origin + half_size;
   float2 center_to_point = input.position.xy - center;
+
   float corner_radius = get_corner_radius(center_to_point, shadow.corner_radii);
+
+  float2 caster_origin = float2(caster_bounds.origin.x, caster_bounds.origin.y);
+  float2 caster_size = float2(caster_bounds.size.width, caster_bounds.size.height);
+  float2 caster_half_size = caster_size / 2.;
+  float2 caster_center = caster_origin + caster_half_size;
+  float2 caster_center_to_point = input.position.xy - caster_center;
+
+  float caster_distance = sdf(caster_center_to_point, caster_half_size, corner_radius);
 
   if (shadow.blur_radius == 0.) {
     float distance = sdf(center_to_point, half_size, corner_radius);
-    return input.color * float4(1., 1., 1., step(0., -distance));
+    float alpha = min(step(0., caster_distance), step(0., -distance));
+    return input.color * float4(1., 1., 1., alpha);
   }
 
   // The signal is only non-zero in a limited range, so don't waste samples
@@ -386,16 +398,17 @@ fragment float4 shadow_fragment(ShadowFragmentInput input [[stage_in]],
   float end = clamp(3. * shadow.blur_radius, low, high);
 
   // Accumulate samples (we can get away with surprisingly few samples)
-  float step = (end - start) / 4.;
-  float y = start + step * 0.5;
+  float sample_step = (end - start) / 4.;
+  float y = start + sample_step * 0.5;
   float alpha = 0.;
   for (int i = 0; i < 4; i++) {
     alpha += blur_along_x(center_to_point.x, center_to_point.y - y, shadow.blur_radius,
                           corner_radius, half_size) *
-            gaussian(y, shadow.blur_radius) * step;
-    y += step;
+            gaussian(y, shadow.blur_radius) * sample_step;
+    y += sample_step;
   }
 
+  alpha = min(step(0., caster_distance), alpha);
   return input.color * float4(1., 1., 1., alpha);
 }
 
