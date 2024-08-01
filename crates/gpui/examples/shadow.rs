@@ -7,10 +7,10 @@ impl Render for Shadow {
     fn render(&mut self, _cx: &mut ViewContext<Self>) -> impl IntoElement {
         div()
             .flex()
-            .bg(rgb(0xffffff))
             .size_full()
             .justify_center()
             .items_center()
+            .bg(hsla(0., 1., 1., 1.))
             .size(Length::Definite(Pixels(300.0).into()))
             .justify_center()
             .items_center()
@@ -20,7 +20,7 @@ impl Render for Shadow {
                 div()
                     .size_4()
                     .rounded_full()
-                    .bg(rgb(0x000000))
+                    .bg(hsla(0., 0., 0., 1.))
                     .shadow(smallvec![
                         BoxShadow {
                             color: hsla(0., 0., 0., 1.0),
@@ -42,17 +42,17 @@ impl Render for Shadow {
                 div()
                     .size_4()
                     .rounded_full()
-                    .bg(rgb(0xff0000))
+                    .bg(hsla(0., 1., 0.5, 1.))
                     .shadow(smallvec![
                         BoxShadow {
-                            color: rgb(0xff0000).into(),
+                            color: hsla(0., 1., 0.5, 1.),
                             offset: point(px(16.), px(16.)),
                             blur_radius: px(1.0),
                             spread_radius: px(0.),
                             inset: false,
                         },
                         BoxShadow {
-                            color: rgb(0xff0000).into(),
+                            color: hsla(0., 1., 0.5, 1.),
                             offset: point(px(32.), px(32.)),
                             blur_radius: px(0.0),
                             spread_radius: px(0.),
@@ -65,9 +65,9 @@ impl Render for Shadow {
                     .size_4()
                     .rounded_tl(px(8.))
                     .rounded_br(px(8.))
-                    .bg(rgb(0x0000ff))
+                    .bg(hsla(180. / 360., 1., 0.5, 1.))
                     .shadow(smallvec![BoxShadow {
-                        color: rgb(0x0000ff).into(),
+                        color: hsla(180. / 360., 1., 0.5, 1.),
                         offset: point(px(32.), px(32.)),
                         blur_radius: px(0.0),
                         spread_radius: px(0.),
@@ -81,7 +81,7 @@ impl Render for Shadow {
                     .rounded_full()
                     .bg(rgb(0x00ff00))
                     .shadow(smallvec![BoxShadow {
-                        color: rgb(0x00ff00).into(),
+                        color: hsla(128. / 360., 1., 0.5, 1.),
                         offset: point(px(32.), px(32.)),
                         blur_radius: px(8.),
                         spread_radius: px(0.),
@@ -90,20 +90,27 @@ impl Render for Shadow {
             )
             .child(div().size_4().rounded_full().shadow(smallvec![
                 BoxShadow {
-                    color: rgb(0x00ff00).into(),
+                    color: hsla(60. / 360., 1., 0.5, 1.),
                     offset: point(px(-8.), px(-8.)),
                     blur_radius: px(0.),
                     spread_radius: px(0.),
                     inset: false,
                 },
                 BoxShadow {
-                    color: rgb(0x00ff00).into(),
+                    color: hsla(60. / 360., 1., 0.5, 1.),
                     offset: point(px(8.), px(8.)),
                     blur_radius: px(8.),
                     spread_radius: px(0.),
                     inset: false,
                 }
             ]))
+            .child(div().size_4().rounded_full().shadow(smallvec![BoxShadow {
+                color: hsla(30. / 360., 1., 0.5, 1.),
+                offset: point(px(8.), px(8.)),
+                blur_radius: px(0.),
+                spread_radius: px(0.),
+                inset: true,
+            },]))
     }
 }
 
