@@ -2292,6 +2292,7 @@ impl<'a> WindowContext<'a> {
                 bounds: bounds.scale(scale_factor),
                 content_mask: content_mask.scale(scale_factor),
                 corner_radii: corner_radii.scale(scale_factor),
+                inset: shadow.inset,
                 color: shadow.color,
                 offset: shadow.offset.scale(scale_factor),
                 spread_radius: shadow.spread_radius.scale(scale_factor),

@@ -27,12 +27,14 @@ impl Render for Shadow {
                             offset: point(px(24.), px(24.)),
                             blur_radius: px(0.0),
                             spread_radius: px(8.),
+                            inset: false,
                         },
                         BoxShadow {
                             color: hsla(0., 0., 100., 1.0),
                             offset: point(px(24.), px(24.)),
                             blur_radius: px(0.0),
                             spread_radius: px(0.),
+                            inset: false,
                         },
                     ]),
             )
@@ -47,12 +49,14 @@ impl Render for Shadow {
                             offset: point(px(16.), px(16.)),
                             blur_radius: px(1.0),
                             spread_radius: px(0.),
+                            inset: false,
                         },
                         BoxShadow {
                             color: rgb(0xff0000).into(),
                             offset: point(px(32.), px(32.)),
                             blur_radius: px(0.0),
                             spread_radius: px(0.),
+                            inset: false,
                         },
                     ]),
             )
@@ -67,6 +71,7 @@ impl Render for Shadow {
                         offset: point(px(32.), px(32.)),
                         blur_radius: px(0.0),
                         spread_radius: px(0.),
+                        inset: false,
                     }]),
             )
             .child(
@@ -80,8 +85,25 @@ impl Render for Shadow {
                         offset: point(px(32.), px(32.)),
                         blur_radius: px(8.),
                         spread_radius: px(0.),
+                        inset: false,
                     }]),
             )
+            .child(div().size_4().rounded_full().shadow(smallvec![
+                BoxShadow {
+                    color: rgb(0x00ff00).into(),
+                    offset: point(px(-8.), px(-8.)),
+                    blur_radius: px(0.),
+                    spread_radius: px(0.),
+                    inset: false,
+                },
+                BoxShadow {
+                    color: rgb(0x00ff00).into(),
+                    offset: point(px(8.), px(8.)),
+                    blur_radius: px(8.),
+                    spread_radius: px(0.),
+                    inset: false,
+                }
+            ]))
     }
 }
 
