@@ -486,6 +486,7 @@ pub(crate) struct Shadow {
     pub corner_radii: Corners<ScaledPixels>,
     pub content_mask: ContentMask<ScaledPixels>,
     pub color: Hsla,
+    pub inset: bool,
     pub offset: Point<ScaledPixels>,
     pub spread_radius: ScaledPixels,
 }
