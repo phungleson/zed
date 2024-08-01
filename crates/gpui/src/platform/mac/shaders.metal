@@ -395,9 +395,9 @@ fragment float4 shadow_fragment(ShadowFragmentInput input [[stage_in]],
     float2 half_size = size / 2.;
     float2 center = origin + half_size;
     float2 center_to_point = input.position.xy - center;
+
     float corner_radius = get_corner_radius(center_to_point, shadow.corner_radii);
     float distance = sdf(center_to_point, half_size, corner_radius);
-
     float caster_distance = sdf(caster_center_to_point, caster_half_size, corner_radius);
 
     float alpha = min(step(0., -caster_distance), step(0., distance));
@@ -414,12 +414,10 @@ fragment float4 shadow_fragment(ShadowFragmentInput input [[stage_in]],
   float2 center_to_point = input.position.xy - center;
 
   float corner_radius = get_corner_radius(center_to_point, shadow.corner_radii);
-
-
+  float distance = sdf(center_to_point, half_size, corner_radius);
   float caster_distance = sdf(caster_center_to_point, caster_half_size, corner_radius);
 
   if (shadow.blur_radius == 0.) {
-    float distance = sdf(center_to_point, half_size, corner_radius);
     float alpha = min(step(0., caster_distance), step(0., -distance));
     return input.color * float4(1., 1., 1., alpha);
   }
