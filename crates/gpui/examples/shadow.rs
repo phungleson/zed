@@ -12,6 +12,7 @@ impl Render for Shadow {
             .justify_center()
             .items_center()
             .gap_4()
+            // Shadows intersecting the others
             .child(
                 div()
                     .size_4()
@@ -34,6 +35,7 @@ impl Render for Shadow {
                         },
                     ]),
             )
+            // Shadows for circle, without blur
             .child(
                 div()
                     .size_4()
@@ -56,6 +58,7 @@ impl Render for Shadow {
                         },
                     ]),
             )
+            // Shadows for rounded box
             .child(
                 div()
                     .size_4()
@@ -70,6 +73,7 @@ impl Render for Shadow {
                         inset: false,
                     }]),
             )
+            // Shadows for pill-shaped box
             .child(
                 div()
                     .h_2()
@@ -84,6 +88,7 @@ impl Render for Shadow {
                         inset: false,
                     }]),
             )
+            // Shadows for circle, with blur
             .child(div().size_4().rounded_full().shadow(smallvec![
                 BoxShadow {
                     color: hsla(60. / 360., 1., 0.5, 1.),
@@ -100,6 +105,7 @@ impl Render for Shadow {
                     inset: false,
                 }
             ]))
+            // Inset shadow for circle
             .child(div().size_4().rounded_full().shadow(smallvec![BoxShadow {
                 color: hsla(30. / 360., 1., 0.5, 1.),
                 offset: point(px(8.), px(8.)),
@@ -107,12 +113,21 @@ impl Render for Shadow {
                 spread_radius: px(0.),
                 inset: true,
             },]))
+            // Shadows for square
             .child(div().size_4().shadow(smallvec![BoxShadow {
                 color: hsla(300. / 360., 1., 0.5, 1.),
                 offset: point(px(8.), px(8.)),
                 blur_radius: px(0.),
                 spread_radius: px(0.),
                 inset: false,
+            },]))
+            // Inset shadows for square
+            .child(div().size_4().shadow(smallvec![BoxShadow {
+                color: hsla(300. / 360., 1., 0.5, 1.),
+                offset: point(px(8.), px(8.)),
+                blur_radius: px(0.),
+                spread_radius: px(0.),
+                inset: true,
             },]))
     }
 }
