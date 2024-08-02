@@ -407,6 +407,17 @@ fragment float4 shadow_fragment(ShadowFragmentInput input [[stage_in]],
   add_shadow_offset(shadow_bounds, shadow.offset);
   add_shadow_spread(shadow_bounds, shadow.spread_radius);
 
+  // Fast path when the shadow is not rounded and doesn't have blur radius.
+  if (
+    shadow.corner_radii.top_left == 0. &&
+    shadow.corner_radii.bottom_left == 0. &&
+    shadow.corner_radii.top_right == 0. &&
+    shadow.corner_radii.bottom_right == 0. &&
+    shadow.blur_radius == 0.
+  ) {
+    return input.color;
+  }
+
   float2 origin = float2(shadow_bounds.origin.x, shadow_bounds.origin.y);
   float2 size = float2(shadow_bounds.size.width, shadow_bounds.size.height);
   float2 half_size = size / 2.;
