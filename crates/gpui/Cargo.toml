@@ -174,4 +174,4 @@ name = "input"
 path = "examples/input.rs"
 
 [[example]]
-name = "fix_me_many_shadows"
+name = "many_shadows"

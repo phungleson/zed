@@ -2286,16 +2286,18 @@ impl<'a> WindowContext<'a> {
         let scale_factor = self.scale_factor();
         let content_mask = self.content_mask();
         for shadow in shadows {
+            let mut shadow_bounds = bounds;
+            shadow_bounds.origin += shadow.offset;
+            shadow_bounds.dilate(shadow.spread_radius);
             self.window.next_frame.scene.insert_primitive(Shadow {
                 order: 0,
                 blur_radius: shadow.blur_radius.scale(scale_factor),
+                shadow_bounds: shadow_bounds.scale(scale_factor),
                 bounds: bounds.scale(scale_factor),
                 content_mask: content_mask.scale(scale_factor),
                 corner_radii: corner_radii.scale(scale_factor),
-                inset: shadow.inset,
                 color: shadow.color,
-                offset: shadow.offset.scale(scale_factor),
-                spread_radius: shadow.spread_radius.scale(scale_factor),
+                inset: shadow.inset,
             });
         }
     }

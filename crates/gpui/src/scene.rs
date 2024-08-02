@@ -189,7 +189,7 @@ pub(crate) enum Primitive {
 impl Primitive {
     pub fn bounds(&self) -> &Bounds<ScaledPixels> {
         match self {
-            Primitive::Shadow(shadow) => &shadow.bounds,
+            Primitive::Shadow(shadow) => &shadow.shadow_bounds,
             Primitive::Quad(quad) => &quad.bounds,
             Primitive::Path(path) => &path.bounds,
             Primitive::Underline(underline) => &underline.bounds,
@@ -480,15 +480,14 @@ impl From<Underline> for Primitive {
 pub(crate) struct Shadow {
     pub order: DrawOrder,
     pub blur_radius: ScaledPixels,
-    /// The bounds of the caster, which are required for inset shadow rendering.
-    /// Shadow bounds is calculated in shaders.
+    pub shadow_bounds: Bounds<ScaledPixels>,
     pub bounds: Bounds<ScaledPixels>,
     pub corner_radii: Corners<ScaledPixels>,
     pub content_mask: ContentMask<ScaledPixels>,
     pub color: Hsla,
     pub inset: bool,
-    pub offset: Point<ScaledPixels>,
-    pub spread_radius: ScaledPixels,
+    // pub offset: Point<ScaledPixels>,
+    // pub spread_radius: ScaledPixels,
 }
 
 impl Ord for Shadow {
