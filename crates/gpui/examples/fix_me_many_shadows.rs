@@ -14,6 +14,7 @@ pub fn box_shadow(
         blur_radius: blur_radius.into(),
         spread_radius: spread_radius.into(),
         color: color.into(),
+        inset: false,
     }
 }
 
