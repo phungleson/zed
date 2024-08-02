@@ -338,25 +338,25 @@ vertex ShadowVertexOutput shadow_vertex(
   float2 unit_vertex = unit_vertices[unit_vertex_id];
   Shadow shadow = shadows[shadow_id];
 
-  Bounds_ScaledPixels caster_bounds = clone_bounds(shadow.bounds);
-  Bounds_ScaledPixels shadow_bounds = clone_bounds(shadow.bounds);
+  // Bounds_ScaledPixels caster_bounds = clone_bounds(shadow.bounds);
+  Bounds_ScaledPixels shadow_bounds = shadow.bounds;
 
-  if (shadow.inset) {
-    float4 device_position = to_device_position(unit_vertex, caster_bounds, viewport_size);
-    float4 clip_distance = distance_from_clip_rect(unit_vertex, caster_bounds, shadow.content_mask.bounds);
-    float4 color = hsla_to_rgba(shadow.color);
+  // if (shadow.inset) {
+  //  float4 device_position = to_device_position(unit_vertex, caster_bounds, viewport_size);
+  //  float4 clip_distance = distance_from_clip_rect(unit_vertex, caster_bounds, shadow.content_mask.bounds);
+  //  float4 color = hsla_to_rgba(shadow.color);
 
-    return ShadowVertexOutput{
-      device_position,
-      color,
-      shadow_id,
-      {clip_distance.x, clip_distance.y, clip_distance.z, clip_distance.w}
-    };
-  }
+  //  return ShadowVertexOutput{
+  //    device_position,
+  //    color,
+  //    shadow_id,
+  //    {clip_distance.x, clip_distance.y, clip_distance.z, clip_distance.w}
+  //  };
+  // }
 
-  add_shadow_offset(shadow_bounds, shadow.offset);
-  add_shadow_spread(shadow_bounds, shadow.spread_radius);
-  add_shadow_blur_spread(shadow_bounds, shadow.blur_radius);
+  // add_shadow_offset(shadow_bounds, shadow.offset);
+  // add_shadow_spread(shadow_bounds, shadow.spread_radius);
+  // add_shadow_blur_spread(shadow_bounds, shadow.blur_radius);
 
   float4 device_position =
       to_device_position(unit_vertex, shadow_bounds, viewport_size);
@@ -376,47 +376,55 @@ fragment float4 shadow_fragment(ShadowFragmentInput input [[stage_in]],
                                 [[buffer(ShadowInputIndex_Shadows)]]) {
   Shadow shadow = shadows[input.shadow_id];
 
-  Bounds_ScaledPixels caster_bounds = clone_bounds(shadow.bounds);
-  Bounds_ScaledPixels shadow_bounds = clone_bounds(shadow.bounds);
+  // Bounds_ScaledPixels caster_bounds = clone_bounds(shadow.bounds);
+  Bounds_ScaledPixels shadow_bounds = shadow.bounds;
 
-  float2 caster_origin = float2(caster_bounds.origin.x, caster_bounds.origin.y);
-  float2 caster_size = float2(caster_bounds.size.width, caster_bounds.size.height);
-  float2 caster_half_size = caster_size / 2.;
-  float2 caster_center = caster_origin + caster_half_size;
-  float2 caster_center_to_point = input.position.xy - caster_center;
+  // shadow_bounds.origin.x += shadow.offset.x;
+  // shadow_bounds.origin.y += shadow.offset.y;
+
+  // shadow_bounds.origin.x -= shadow.spread_radius;
+  // shadow_bounds.origin.y -= shadow.spread_radius;
+  // shadow_bounds.size.width += 2. * shadow.spread_radius;
+  // shadow_bounds.size.height += 2. * shadow.spread_radius;
+
+  // float2 caster_origin = float2(caster_bounds.origin.x, caster_bounds.origin.y);
+  // float2 caster_size = float2(caster_bounds.size.width, caster_bounds.size.height);
+  // float2 caster_half_size = caster_size / 2.;
+  // float2 caster_center = caster_origin + caster_half_size;
+  // float2 caster_center_to_point = input.position.xy - caster_center;
 
   // TODO: make blur radius work
-  if (shadow.inset) {
-    add_shadow_offset(shadow_bounds, shadow.offset);
-    add_shadow_spread(shadow_bounds, -shadow.spread_radius);
+  // if (shadow.inset) {
+  //   add_shadow_offset(shadow_bounds, shadow.offset);
+  //   add_shadow_spread(shadow_bounds, -shadow.spread_radius);
 
-    float2 origin = float2(shadow_bounds.origin.x, shadow_bounds.origin.y);
-    float2 size = float2(shadow_bounds.size.width, shadow_bounds.size.height);
-    float2 half_size = size / 2.;
-    float2 center = origin + half_size;
-    float2 center_to_point = input.position.xy - center;
+  //   float2 origin = float2(shadow_bounds.origin.x, shadow_bounds.origin.y);
+  //   float2 size = float2(shadow_bounds.size.width, shadow_bounds.size.height);
+  //   float2 half_size = size / 2.;
+  //   float2 center = origin + half_size;
+  //   float2 center_to_point = input.position.xy - center;
 
-    float corner_radius = get_corner_radius(center_to_point, shadow.corner_radii);
-    float distance = sdf(center_to_point, half_size, corner_radius);
-    float caster_distance = sdf(caster_center_to_point, caster_half_size, corner_radius);
+  //   float corner_radius = get_corner_radius(center_to_point, shadow.corner_radii);
+  //   float distance = sdf(center_to_point, half_size, corner_radius);
+  //   float caster_distance = sdf(caster_center_to_point, caster_half_size, corner_radius);
 
-    float alpha = min(step(0., -caster_distance), step(0., distance));
-    return input.color * float4(1., 1., 1., alpha);
-  }
+  //   float alpha = min(step(0., -caster_distance), step(0., distance));
+  //   return input.color * float4(1., 1., 1., alpha);
+  // }
 
-  add_shadow_offset(shadow_bounds, shadow.offset);
-  add_shadow_spread(shadow_bounds, shadow.spread_radius);
+  // add_shadow_offset(shadow_bounds, shadow.offset);
+  // add_shadow_spread(shadow_bounds, shadow.spread_radius);
 
   // Fast path when the shadow is not rounded and doesn't have blur radius.
-  if (
-    shadow.corner_radii.top_left == 0. &&
-    shadow.corner_radii.bottom_left == 0. &&
-    shadow.corner_radii.top_right == 0. &&
-    shadow.corner_radii.bottom_right == 0. &&
-    shadow.blur_radius == 0.
-  ) {
-    return input.color;
-  }
+  // if (
+  //   shadow.corner_radii.top_left == 0. &&
+  //   shadow.corner_radii.bottom_left == 0. &&
+  //   shadow.corner_radii.top_right == 0. &&
+  //   shadow.corner_radii.bottom_right == 0. &&
+  //   shadow.blur_radius == 0.
+  // ) {
+  //   return input.color;
+  // }
 
   float2 origin = float2(shadow_bounds.origin.x, shadow_bounds.origin.y);
   float2 size = float2(shadow_bounds.size.width, shadow_bounds.size.height);
@@ -426,12 +434,12 @@ fragment float4 shadow_fragment(ShadowFragmentInput input [[stage_in]],
 
   float corner_radius = get_corner_radius(center_to_point, shadow.corner_radii);
   float distance = sdf(center_to_point, half_size, corner_radius);
-  float caster_distance = sdf(caster_center_to_point, caster_half_size, corner_radius);
+  // float caster_distance = sdf(caster_center_to_point, caster_half_size, corner_radius);
 
-  if (shadow.blur_radius == 0.) {
-    float alpha = min(step(0., caster_distance), step(0., -distance));
-    return input.color * float4(1., 1., 1., alpha);
-  }
+  // if (shadow.blur_radius == 0.) {
+  //  float alpha = min(step(0., caster_distance), step(0., -distance));
+  //  return input.color * float4(1., 1., 1., alpha);
+  // }
 
   // The signal is only non-zero in a limited range, so don't waste samples
   float low = center_to_point.y - half_size.y;
@@ -450,7 +458,7 @@ fragment float4 shadow_fragment(ShadowFragmentInput input [[stage_in]],
     y += sample_step;
   }
 
-  alpha = min(step(0., caster_distance), alpha);
+  // alpha = min(step(0., caster_distance), alpha);
   return input.color * float4(1., 1., 1., alpha);
 }
 
