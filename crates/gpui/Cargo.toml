@@ -172,3 +172,6 @@ path = "examples/window_shadow.rs"
 [[example]]
 name = "input"
 path = "examples/input.rs"
+
+[[example]]
+name = "fix_me_many_shadows"
