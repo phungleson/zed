@@ -107,6 +107,13 @@ impl Render for Shadow {
                 spread_radius: px(0.),
                 inset: true,
             },]))
+            .child(div().size_4().shadow(smallvec![BoxShadow {
+                color: hsla(300. / 360., 1., 0.5, 1.),
+                offset: point(px(8.), px(8.)),
+                blur_radius: px(0.),
+                spread_radius: px(0.),
+                inset: false,
+            },]))
     }
 }
 
