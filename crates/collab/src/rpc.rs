@@ -1,5 +1,6 @@
 mod connection_pool;
 
+use crate::api::CloudflareIpCountryHeader;
 use crate::{
     auth,
     db::{
@@ -152,6 +153,9 @@ struct Session {
     supermaven_client: Option<Arc<SupermavenAdminApi>>,
     http_client: Arc<IsahcHttpClient>,
     rate_limiter: Arc<RateLimiter>,
+    /// The GeoIP country code for the user.
+    #[allow(unused)]
+    geoip_country_code: Option<String>,
     _executor: Executor,
 }
 
@@ -984,6 +988,7 @@ impl Server {
         address: String,
         principal: Principal,
         zed_version: ZedVersion,
+        geoip_country_code: Option<String>,
         send_connection_id: Option<oneshot::Sender<ConnectionId>>,
         executor: Executor,
     ) -> impl Future<Output = ()> {
@@ -993,9 +998,13 @@ impl Server {
             user_id=field::Empty,
             login=field::Empty,
             impersonator=field::Empty,
-            dev_server_id=field::Empty
+            dev_server_id=field::Empty,
+            geoip_country_code=field::Empty
         );
         principal.update_span(&span);
+        if let Some(country_code) = geoip_country_code.as_ref() {
+            span.record("geoip_country_code", country_code);
+        }
 
         let mut teardown = self.teardown.subscribe();
         async move {
@@ -1010,6 +1019,7 @@ impl Server {
                     move |duration| executor.sleep(duration)
                 });
             tracing::Span::current().record("connection_id", format!("{}", connection_id));
+
             tracing::info!("connection opened");
 
             let user_agent = format!("Zed Server/{}", env!("CARGO_PKG_VERSION"));
@@ -1039,6 +1049,7 @@ impl Server {
                 live_kit_client: this.app_state.live_kit_client.clone(),
                 http_client,
                 rate_limiter: this.app_state.rate_limiter.clone(),
+                geoip_country_code,
                 _executor: executor.clone(),
                 supermaven_client,
             };
@@ -1395,6 +1406,7 @@ pub async fn handle_websocket_request(
     ConnectInfo(socket_address): ConnectInfo<SocketAddr>,
     Extension(server): Extension<Arc<Server>>,
     Extension(principal): Extension<Principal>,
+    country_code_header: Option<TypedHeader<CloudflareIpCountryHeader>>,
     ws: WebSocketUpgrade,
 ) -> axum::response::Response {
     if protocol_version != rpc::PROTOCOL_VERSION {
@@ -1435,6 +1447,7 @@ pub async fn handle_websocket_request(
                     socket_address,
                     principal,
                     version,
+                    country_code_header.map(|header| header.to_string()),
                     None,
                     Executor::Production,
                 )
