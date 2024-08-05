@@ -366,7 +366,7 @@ fragment float4 shadow_fragment(ShadowFragmentInput input [[stage_in]],
   if (shadow.blur_radius == 0.) {
     float alpha = min(step(0., distance), step(0., -shadow_distance));
     return input.color * float4(1., 1., 1., alpha);
-  }
+  }  
 
   // The signal is only non-zero in a limited range, so don't waste samples
   float low = shadow_center_to_point.y - shadow_half_size.y;

@@ -15,11 +15,12 @@ use collections::HashMap;
 use core_foundation::base::TCFType;
 use foreign_types::ForeignType;
 use media::core_video::CVMetalTextureCache;
-use metal::{CAMetalLayer, CommandQueue, MTLPixelFormat, MTLResourceOptions, NSRange};
+use metal::{CAMetalLayer, CommandQueue, MTLOrigin, MTLPixelFormat, MTLRegion, MTLResourceOptions, MTLSize, NSRange, TextureDescriptor};
 use objc::{self, msg_send, sel, sel_impl};
 use parking_lot::Mutex;
 use smallvec::SmallVec;
 use std::{cell::Cell, ffi::c_void, mem, ptr, sync::Arc};
+use crate::screenshot::Screenshot;
 
 // Exported to metal
 pub(crate) type PointF = crate::Point<f32>;
@@ -1116,6 +1117,53 @@ impl MetalRenderer {
             *instance_offset = next_offset;
         }
         true
+    }
+
+    pub fn screenshot(&self) -> Screenshot {
+        let layer = self.layer.clone();
+        let viewport_size = layer.drawable_size();
+        let viewport_size: Size<DevicePixels> = size(
+            (viewport_size.width.ceil() as i32).into(),
+            (viewport_size.height.ceil() as i32).into(),
+        );
+        let width = viewport_size.width.0 as u64;
+        let height = viewport_size.height.0 as u64;
+
+        let texture_descriptor = TextureDescriptor::new();
+        texture_descriptor.set_width(width);
+        texture_descriptor.set_height(height);
+        texture_descriptor.set_pixel_format(MTLPixelFormat::RGBA8Unorm);
+        let texture = self.device.new_texture(&texture_descriptor);
+
+        let command_buffer = self.command_queue.new_command_buffer();
+        let blit_command_encoder = command_buffer.new_blit_command_encoder();
+        blit_command_encoder.synchronize_resource(&texture);
+        blit_command_encoder.end_encoding();
+
+        command_buffer.commit();
+        command_buffer.wait_until_completed();
+
+        let mut screenshot = vec![0; (width * height * 4) as usize];
+
+        texture.get_bytes(
+            screenshot.as_mut_ptr() as *mut std::ffi::c_void,
+            width * 4,
+            MTLRegion {
+                origin: MTLOrigin { x: 0, y: 0, z: 0 },
+                size: MTLSize {
+                    width,
+                    height,
+                    depth: 1,
+                },
+            },
+            0,
+        );
+
+        Screenshot {
+            data: screenshot,
+            width: width as u32,
+            height: height as u32,
+        }
     }
 }
 

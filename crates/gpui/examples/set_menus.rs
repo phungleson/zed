@@ -39,6 +39,7 @@ actions!(set_menus, [Quit]);
 
 // Define the quit function that is registered with the AppContext
 fn quit(_: &Quit, cx: &mut AppContext) {
+    cx.update_window(cx.active_window().unwrap(), |_, _| {}).unwrap();
     println!("Gracefully quitting the application . . .");
-    cx.quit();
+    // cx.quit();
 }

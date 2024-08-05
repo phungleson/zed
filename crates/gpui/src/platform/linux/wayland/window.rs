@@ -30,6 +30,7 @@ use crate::{
     WaylandClientStatePtr, WindowAppearance, WindowBackgroundAppearance, WindowBounds,
     WindowControls, WindowDecorations, WindowParams,
 };
+use crate::screenshot::Screenshot;
 
 #[derive(Default)]
 pub(crate) struct Callbacks {
@@ -1008,6 +1009,10 @@ impl PlatformWindow for WaylandWindow {
 
     fn gpu_specs(&self) -> Option<GPUSpecs> {
         self.borrow().renderer.gpu_specs().into()
+    }
+
+    fn screenshot(&self) -> Screenshot {
+        unimplemented!()
     }
 }
 

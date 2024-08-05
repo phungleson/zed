@@ -501,9 +501,12 @@ impl AppContext {
                     WindowContext::new(cx, &mut window).defer(|cx| cx.appearance_changed());
                     cx.window_handles.insert(id, window.handle);
                     cx.windows.get_mut(id).unwrap().replace(window);
+                    println!("id={:?}", id.as_u64());
+                    println!("id={:?}", cx.windows.get(id).is_some());
                     Ok(handle)
                 }
                 Err(e) => {
+                    println!("remove id={:?}", id);
                     cx.windows.remove(id);
                     return Err(e);
                 }
@@ -1379,6 +1382,41 @@ impl Context for AppContext {
             .map_err(|_| anyhow!("root view's type has changed"))?;
 
         Ok(read(view, self))
+    }
+}
+
+impl AppContext {
+    /// S
+    pub fn update_windowx<T, F>(&mut self, handle: AnyWindowHandle, update: F) -> Result<T>
+    where
+        F: FnOnce(AnyView, &mut WindowContext<'_>) -> T,
+    {
+        self.update(|cx| {
+            println!("handle.id={:?} {:?}", handle.id.as_u64(), cx
+                .windows
+                .get_mut(handle.id).unwrap().is_some());
+            let mut window = cx
+                .windows
+                .get_mut(handle.id)
+                .ok_or_else(|| anyhow!("window not found"))?
+                .take()
+                .ok_or_else(|| anyhow!("window not found"))?;
+
+            let root_view = window.root_view.clone().unwrap();
+            let result = update(root_view, &mut WindowContext::new(cx, &mut window));
+
+            if window.removed {
+                cx.window_handles.remove(&handle.id);
+                cx.windows.remove(handle.id);
+            } else {
+                cx.windows
+                    .get_mut(handle.id)
+                    .ok_or_else(|| anyhow!("window not found"))?
+                    .replace(window);
+            }
+
+            Ok(result)
+        })
     }
 }
 

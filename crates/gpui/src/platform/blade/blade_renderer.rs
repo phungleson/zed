@@ -17,6 +17,7 @@ use std::{ffi::c_void, ptr::NonNull};
 use blade_graphics as gpu;
 use blade_util::{BufferBelt, BufferBeltDescriptor};
 use std::{mem, sync::Arc};
+use crate::screenshot::Screenshot;
 
 const MAX_FRAME_TIME_MS: u32 = 10000;
 
@@ -765,5 +766,9 @@ impl BladeRenderer {
 
         self.wait_for_gpu();
         self.last_sync_point = Some(sync_point);
+    }
+
+    pub fn screenshot(&self) -> Screenshot {
+        unimplemented!()
     }
 }

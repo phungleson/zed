@@ -52,6 +52,7 @@ use uuid::Uuid;
 mod prompts;
 
 pub use prompts::*;
+use crate::screenshot::Screenshot;
 
 pub(crate) const DEFAULT_WINDOW_SIZE: Size<Pixels> = size(px(1024.), px(700.));
 
@@ -3760,6 +3761,11 @@ impl<'a> WindowContext<'a> {
     /// Currently returns None on Mac and Windows.
     pub fn gpu_specs(&self) -> Option<GPUSpecs> {
         self.window.platform_window.gpu_specs()
+    }
+
+    /// Take screenshot to the current window
+    pub fn screenshot(&self) -> Screenshot {
+        (self.window.platform_window).screenshot()
     }
 }
 

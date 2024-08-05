@@ -45,6 +45,7 @@ use std::{
     time::Duration,
 };
 use util::ResultExt;
+use crate::screenshot::Screenshot;
 
 const WINDOW_STATE_IVAR: &str = "windowState";
 
@@ -1118,6 +1119,11 @@ impl PlatformWindow for MacWindow {
 
     fn gpu_specs(&self) -> Option<crate::GPUSpecs> {
         None
+    }
+
+    fn screenshot(&self) -> Screenshot {
+        let mut this = self.0.lock();
+        this.renderer.screenshot()
     }
 }
 

@@ -50,7 +50,6 @@ use std::{
     slice, str,
     sync::Arc,
 };
-
 use super::renderer;
 
 #[allow(non_upper_case_globals)]

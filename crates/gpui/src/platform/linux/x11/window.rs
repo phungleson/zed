@@ -28,7 +28,7 @@ use std::{
     cell::RefCell, ffi::c_void, mem::size_of, num::NonZeroU32, ops::Div, ptr::NonNull, rc::Rc,
     sync::Arc,
 };
-
+use crate::screenshot::Screenshot;
 use super::{X11Display, XINPUT_MASTER_DEVICE};
 x11rb::atom_manager! {
     pub XcbAtoms: AtomsCookie {
@@ -1397,5 +1397,9 @@ impl PlatformWindow for X11Window {
 
     fn gpu_specs(&self) -> Option<GPUSpecs> {
         self.0.state.borrow().renderer.gpu_specs().into()
+    }
+
+    fn screenshot(&self) -> Screenshot {
+        unimplemented!()
     }
 }
