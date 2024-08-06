@@ -1,9 +1,4 @@
-use crate::{
-    AnyWindowHandle, AtlasKey, AtlasTextureId, AtlasTile, Bounds, DispatchEventResult, GPUSpecs,
-    Pixels, PlatformAtlas, PlatformDisplay, PlatformInput, PlatformInputHandler, PlatformWindow,
-    Point, Size, TestPlatform, TileId, WindowAppearance, WindowBackgroundAppearance, WindowBounds,
-    WindowParams,
-};
+use crate::{AnyWindowHandle, AtlasKey, AtlasTextureId, AtlasTile, Bounds, DispatchEventResult, GPUSpecs, Pixels, PlatformAtlas, PlatformDisplay, PlatformInput, PlatformInputHandler, PlatformWindow, Point, Screenshot, Size, TestPlatform, TileId, WindowAppearance, WindowBackgroundAppearance, WindowBounds, WindowParams};
 use collections::HashMap;
 use parking_lot::Mutex;
 use raw_window_handle::{HasDisplayHandle, HasWindowHandle};
@@ -276,6 +271,10 @@ impl PlatformWindow for TestWindow {
 
     fn gpu_specs(&self) -> Option<GPUSpecs> {
         None
+    }
+
+    fn screenshot(&self) -> Screenshot {
+        unimplemented!()
     }
 }
 

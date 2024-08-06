@@ -19,13 +19,7 @@ mod test;
 #[cfg(target_os = "windows")]
 mod windows;
 
-use crate::{
-    point, Action, AnyWindowHandle, AsyncWindowContext, BackgroundExecutor, Bounds, DevicePixels,
-    DispatchEventResult, Font, FontId, FontMetrics, FontRun, ForegroundExecutor, GPUSpecs, GlyphId,
-    Keymap, LineLayout, Pixels, PlatformInput, Point, RenderGlyphParams, RenderImageParams,
-    RenderSvgParams, Scene, SharedString, Size, Task, TaskLabel, WindowContext,
-    DEFAULT_WINDOW_SIZE,
-};
+use crate::{point, Action, AnyWindowHandle, AsyncWindowContext, BackgroundExecutor, Bounds, DevicePixels, DispatchEventResult, Font, FontId, FontMetrics, FontRun, ForegroundExecutor, GPUSpecs, GlyphId, Keymap, LineLayout, Pixels, PlatformInput, Point, RenderGlyphParams, RenderImageParams, RenderSvgParams, Scene, SharedString, Size, Task, TaskLabel, WindowContext, DEFAULT_WINDOW_SIZE, Screenshot};
 use anyhow::Result;
 use async_task::Runnable;
 use futures::channel::oneshot;
@@ -374,6 +368,8 @@ pub(crate) trait PlatformWindow: HasWindowHandle + HasDisplayHandle {
     }
     fn set_client_inset(&self, _inset: Pixels) {}
     fn gpu_specs(&self) -> Option<GPUSpecs>;
+
+    fn screenshot(&self) -> Screenshot;
 
     #[cfg(any(test, feature = "test-support"))]
     fn as_test(&mut self) -> Option<&mut TestWindow> {

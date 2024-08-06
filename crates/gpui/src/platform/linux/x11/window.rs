@@ -1,13 +1,6 @@
 use anyhow::Context;
 
-use crate::{
-    platform::blade::{BladeRenderer, BladeSurfaceConfig},
-    px, size, AnyWindowHandle, Bounds, Decorations, DevicePixels, ForegroundExecutor, GPUSpecs,
-    Modifiers, Pixels, PlatformAtlas, PlatformDisplay, PlatformInput, PlatformInputHandler,
-    PlatformWindow, Point, PromptLevel, ResizeEdge, Scene, Size, Tiling, WindowAppearance,
-    WindowBackgroundAppearance, WindowBounds, WindowDecorations, WindowKind, WindowParams,
-    X11ClientStatePtr,
-};
+use crate::{platform::blade::{BladeRenderer, BladeSurfaceConfig}, px, size, AnyWindowHandle, Bounds, Decorations, DevicePixels, ForegroundExecutor, GPUSpecs, Modifiers, Pixels, PlatformAtlas, PlatformDisplay, PlatformInput, PlatformInputHandler, PlatformWindow, Point, PromptLevel, ResizeEdge, Scene, Size, Tiling, WindowAppearance, WindowBackgroundAppearance, WindowBounds, WindowDecorations, WindowKind, WindowParams, X11ClientStatePtr, Screenshot};
 
 use blade_graphics as gpu;
 use raw_window_handle as rwh;
@@ -1397,5 +1390,9 @@ impl PlatformWindow for X11Window {
 
     fn gpu_specs(&self) -> Option<GPUSpecs> {
         self.0.state.borrow().renderer.gpu_specs().into()
+    }
+
+    fn screenshot(&self) -> Screenshot {
+        unimplemented!()
     }
 }

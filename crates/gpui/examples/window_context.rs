@@ -6,6 +6,7 @@ struct Main {
 
 impl Main {
     fn backspace(&mut self, _: &Backspace, cx: &mut ViewContext<Self>) {
+        cx.window_context().screenshot();
         println!("{}", cx.window_context().is_window_active());
     }
 }

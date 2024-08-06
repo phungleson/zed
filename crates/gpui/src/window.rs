@@ -16,6 +16,7 @@ use crate::{
     WindowControls, WindowDecorations, WindowOptions, WindowParams, WindowTextSystem,
     SUBPIXEL_VARIANTS,
 };
+use crate::screenshot::Screenshot;
 use anyhow::{anyhow, Context as _, Result};
 use collections::{FxHashMap, FxHashSet};
 use derive_more::{Deref, DerefMut};
@@ -3760,6 +3761,11 @@ impl<'a> WindowContext<'a> {
     /// Currently returns None on Mac and Windows.
     pub fn gpu_specs(&self) -> Option<GPUSpecs> {
         self.window.platform_window.gpu_specs()
+    }
+
+    /// screenshot
+    pub fn screenshot(&self) -> Screenshot {
+        self.window.platform_window.screenshot()
     }
 }
 

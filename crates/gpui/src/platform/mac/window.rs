@@ -1,11 +1,5 @@
 use super::{ns_string, renderer, MacDisplay, NSRange, NSStringExt};
-use crate::{
-    platform::PlatformInputHandler, point, px, size, AnyWindowHandle, Bounds, DisplayLink,
-    ExternalPaths, FileDropEvent, ForegroundExecutor, KeyDownEvent, Keystroke, Modifiers,
-    ModifiersChangedEvent, MouseButton, MouseDownEvent, MouseMoveEvent, MouseUpEvent, Pixels,
-    PlatformAtlas, PlatformDisplay, PlatformInput, PlatformWindow, Point, PromptLevel, Size, Timer,
-    WindowAppearance, WindowBackgroundAppearance, WindowBounds, WindowKind, WindowParams,
-};
+use crate::{platform::PlatformInputHandler, point, px, size, AnyWindowHandle, Bounds, DisplayLink, ExternalPaths, FileDropEvent, ForegroundExecutor, KeyDownEvent, Keystroke, Modifiers, ModifiersChangedEvent, MouseButton, MouseDownEvent, MouseMoveEvent, MouseUpEvent, Pixels, PlatformAtlas, PlatformDisplay, PlatformInput, PlatformWindow, Point, PromptLevel, Size, Timer, WindowAppearance, WindowBackgroundAppearance, WindowBounds, WindowKind, WindowParams, Screenshot};
 use block::ConcreteBlock;
 use cocoa::{
     appkit::{
@@ -1118,6 +1112,10 @@ impl PlatformWindow for MacWindow {
 
     fn gpu_specs(&self) -> Option<crate::GPUSpecs> {
         None
+    }
+
+    fn screenshot(&self) -> Screenshot {
+        self.0.lock().renderer.screenshot()
     }
 }
 

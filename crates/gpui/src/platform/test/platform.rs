@@ -1,8 +1,4 @@
-use crate::{
-    AnyWindowHandle, BackgroundExecutor, ClipboardItem, CursorStyle, ForegroundExecutor, Keymap,
-    Platform, PlatformDisplay, PlatformTextSystem, Task, TestDisplay, TestWindow, WindowAppearance,
-    WindowParams,
-};
+use crate::{AnyWindowHandle, BackgroundExecutor, ClipboardItem, CursorStyle, ForegroundExecutor, Keymap, Platform, PlatformDisplay, PlatformTextSystem, Screenshot, Task, TestDisplay, TestWindow, WindowAppearance, WindowParams};
 use anyhow::Result;
 use collections::VecDeque;
 use futures::channel::oneshot;
