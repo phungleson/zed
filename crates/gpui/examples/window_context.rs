@@ -5,28 +5,17 @@ struct Main {
 }
 
 impl Main {
-    // fn backspace(&mut self, _: &Backspace, cx: &mut ViewContext<Self>) {
-    //     if self.selected_range.is_empty() {
-    //         self.select_to(self.previous_boundary(self.cursor_offset()), cx)
-    //     }
-    //     self.replace_text_in_range(None, "", cx)
-    // }
-
     fn backspace(&mut self, _: &Backspace, cx: &mut ViewContext<Self>) {
         println!("{}", cx.window_context().is_window_active());
     }
 }
 
-impl FocusableView for Main {
-    fn focus_handle(&self, _: &AppContext) -> FocusHandle {
-        self.focus_handle.clone()
-    }
-}
 
 impl Render for Main {
     fn render(&mut self, cx: &mut ViewContext<Self>) -> impl IntoElement {
         div()
             .flex()
+            .size_full()
             .track_focus(&self.focus_handle)
             .bg(rgb(0x2e7d32))
             .key_context("TextInput")
@@ -41,7 +30,7 @@ fn main() {
         ]);
 
         let bounds = Bounds::centered(None, size(px(300.0), px(300.0)), cx);
-        let window = cx
+        cx
             .open_window(
                 WindowOptions {
                     window_bounds: Some(WindowBounds::Windowed(bounds)),
