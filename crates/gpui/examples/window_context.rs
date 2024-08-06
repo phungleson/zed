@@ -1,3 +1,8 @@
+use std::fs::File;
+use std::io::BufWriter;
+use std::path::PathBuf;
+use image::codecs::png;
+use image::{ExtendedColorType, ImageEncoder};
 use gpui::*;
 
 struct Main {
@@ -6,7 +11,21 @@ struct Main {
 
 impl Main {
     fn backspace(&mut self, _: &Backspace, cx: &mut ViewContext<Self>) {
-        cx.window_context().screenshot();
+        let screenshot = cx.screenshot();
+        println!("screenshot");
+        let out_file = PathBuf::from("out.png");
+        let file = File::create(&out_file).unwrap();
+        let ref mut writer = BufWriter::new(file);
+
+        let encoder = png::PngEncoder::new(writer);
+        encoder
+            .write_image(
+                &screenshot.data,
+                screenshot.width,
+                screenshot.height,
+                ExtendedColorType::Rgba8,
+            )
+            .unwrap();
         println!("{}", cx.window_context().is_window_active());
     }
 }

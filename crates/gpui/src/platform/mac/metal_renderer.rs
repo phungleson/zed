@@ -1123,6 +1123,7 @@ impl MetalRenderer {
     }
 
     pub fn screenshot(&self) -> Screenshot {
+        // self.device.
         let layer = self.layer.clone();
         let viewport_size = layer.drawable_size();
         let viewport_size: Size<DevicePixels> = size(
@@ -1138,7 +1139,23 @@ impl MetalRenderer {
         texture_descriptor.set_pixel_format(MTLPixelFormat::RGBA8Unorm);
         let texture = self.device.new_texture(&texture_descriptor);
 
+        let render_pass_descriptor = metal::RenderPassDescriptor::new();
+        let color_attachment = render_pass_descriptor
+            .color_attachments()
+            .object_at(0)
+            .unwrap();
+
+        color_attachment.set_texture(Some(drawable.texture()));
+        color_attachment.set_load_action(metal::MTLLoadAction::Clear);
+        color_attachment.set_store_action(metal::MTLStoreAction::Store);
+        let alpha = if self.layer.is_opaque() { 1. } else { 0. };
+        color_attachment.set_clear_color(metal::MTLClearColor::new(0., 0., 0., alpha));
+        color_attachment.set_texture(Some(texture));
+
+
         let command_buffer = self.command_queue.new_command_buffer();
+        let command_encoder = command_buffer.new_render_command_encoder(render_pass_descriptor);
+
         let blit_command_encoder = command_buffer.new_blit_command_encoder();
         blit_command_encoder.synchronize_resource(&texture);
         blit_command_encoder.end_encoding();
